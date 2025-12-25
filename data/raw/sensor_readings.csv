@@ -1,0 +1,21 @@
+reading_id,device_id,timestamp,metric_type,metric_value,unit,quality_score
+R0001,DEV001,2024-12-01 08:00:00,temperature,22.5,celsius,0.98
+R0002,DEV001,2024-12-01 08:15:00,temperature,22.8,celsius,0.99
+R0003,DEV001,2024-12-01 08:30:00,temperature,23.1,celsius,0.97
+R0004,DEV002,2024-12-01 08:00:00,temperature,21.2,celsius,0.95
+R0005,DEV002,2024-12-01 08:15:00,temperature,21.5,celsius,0.96
+R0006,DEV003,2024-12-01 08:00:00,humidity,45.2,percent,0.99
+R0007,DEV003,2024-12-01 08:15:00,humidity,46.1,percent,0.98
+R0008,DEV003,2024-12-01 08:30:00,humidity,44.8,percent,0.97
+R0009,DEV004,2024-12-01 08:00:00,humidity,52.3,percent,0.94
+R0010,DEV004,2024-12-01 08:15:00,humidity,53.1,percent,0.95
+R0011,DEV005,2024-12-01 08:00:00,pressure,1013.25,hpa,0.99
+R0012,DEV005,2024-12-01 08:15:00,pressure,1013.30,hpa,0.99
+R0013,DEV007,2024-12-01 08:00:00,temperature,24.0,celsius,0.96
+R0014,DEV007,2024-12-01 08:00:00,humidity,48.5,percent,0.96
+R0015,DEV007,2024-12-01 08:00:00,pressure,1012.80,hpa,0.95
+R0016,DEV008,2024-12-01 08:00:00,temperature,18.5,celsius,0.97
+R0017,DEV008,2024-12-01 08:00:00,humidity,55.2,percent,0.97
+R0018,DEV008,2024-12-01 08:00:00,pressure,1015.10,hpa,0.98
+R0019,DEV001,2024-12-01 09:00:00,temperature,24.2,celsius,0.98
+R0020,DEV001,2024-12-01 09:15:00,temperature,24.8,celsius,0.99

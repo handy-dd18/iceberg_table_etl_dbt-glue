@@ -1,0 +1,70 @@
+version: 2
+
+sources:
+  - name: iot_demo
+    description: "IoTデモ用のソーステーブル（Athenaで作成されたIcebergテーブル）"
+    database: iot_demo
+    schema: ""
+    tables:
+      - name: devices
+        description: "IoTデバイスのマスタテーブル"
+        columns:
+          - name: device_id
+            description: "デバイスの一意識別子"
+            tests:
+              - unique
+              - not_null
+          - name: device_name
+            description: "デバイス名"
+          - name: device_type
+            description: "デバイスタイプ（temperature, humidity, pressure, multi）"
+          - name: location
+            description: "設置場所"
+          - name: installation_date
+            description: "設置日"
+          - name: is_active
+            description: "アクティブフラグ"
+
+      - name: sensor_readings
+        description: "センサー読み取りデータ"
+        columns:
+          - name: reading_id
+            description: "読み取りの一意識別子"
+            tests:
+              - unique
+              - not_null
+          - name: device_id
+            description: "デバイスID（devices.device_idへの参照）"
+            tests:
+              - not_null
+          - name: reading_timestamp
+            description: "読み取り日時"
+          - name: metric_type
+            description: "メトリクスタイプ"
+          - name: metric_value
+            description: "計測値"
+          - name: unit
+            description: "単位"
+          - name: quality_score
+            description: "品質スコア（0-1）"
+
+      - name: alerts
+        description: "アラートデータ"
+        columns:
+          - name: alert_id
+            description: "アラートの一意識別子"
+            tests:
+              - unique
+              - not_null
+          - name: device_id
+            description: "デバイスID"
+          - name: alert_timestamp
+            description: "アラート発生日時"
+          - name: alert_type
+            description: "アラートタイプ"
+          - name: severity
+            description: "重要度（info, warning, critical）"
+          - name: message
+            description: "アラートメッセージ"
+          - name: is_resolved
+            description: "解決済みフラグ"

@@ -1,0 +1,31 @@
+name: 'iot_demo'
+version: '1.0.0'
+config-version: 2
+
+profile: 'iot_demo'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  iot_demo:
+    # staging層: ソーステーブルをそのまま参照
+    staging:
+      +materialized: view
+      +schema: staging
+    # marts層: ビジネスロジックを適用した分析用テーブル
+    marts:
+      +materialized: table
+      +schema: marts
+      +file_format: iceberg
+      +table_properties:
+        format: parquet
+        write_compression: snappy

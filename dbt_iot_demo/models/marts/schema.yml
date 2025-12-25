@@ -1,0 +1,55 @@
+version: 2
+
+models:
+  - name: dim_devices
+    description: "デバイスディメンションテーブル（アラート・読み取りサマリー付き）"
+    columns:
+      - name: device_id
+        description: "デバイスの一意識別子"
+        tests:
+          - unique
+          - not_null
+      - name: total_alerts
+        description: "総アラート数"
+      - name: unresolved_alerts
+        description: "未解決アラート数"
+      - name: total_readings
+        description: "総読み取り数"
+      - name: avg_quality_score
+        description: "平均品質スコア"
+
+  - name: fct_hourly_metrics
+    description: "時間単位のセンサーメトリクス集計ファクトテーブル"
+    columns:
+      - name: device_id
+        description: "デバイスID"
+        tests:
+          - not_null
+      - name: reading_date
+        description: "読み取り日"
+      - name: reading_hour
+        description: "読み取り時間（時）"
+      - name: metric_type
+        description: "メトリクスタイプ"
+      - name: avg_value
+        description: "平均値"
+      - name: min_value
+        description: "最小値"
+      - name: max_value
+        description: "最大値"
+
+  - name: fct_daily_alerts
+    description: "日次アラート集計ファクトテーブル"
+    columns:
+      - name: device_id
+        description: "デバイスID"
+        tests:
+          - not_null
+      - name: alert_date
+        description: "アラート日"
+      - name: alert_count
+        description: "アラート数"
+      - name: resolved_count
+        description: "解決済みアラート数"
+      - name: unresolved_count
+        description: "未解決アラート数"

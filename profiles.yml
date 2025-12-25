@@ -1,0 +1,29 @@
+iot_demo:
+  target: dev
+  outputs:
+    dev:
+      type: glue
+      # Glueジョブ実行用のIAMロール
+      role_arn: "{{ env_var('DBT_GLUE_ROLE_ARN') }}"
+      # AWSリージョン
+      region: "{{ env_var('DBT_GLUE_REGION', 'ap-northeast-1') }}"
+      # Glueデータカタログのデータベース名
+      database: "{{ env_var('DBT_GLUE_DATABASE', 'iot_demo') }}"
+      # Glueジョブのワーカータイプ
+      workers: 2
+      worker_type: G.1X
+      # Icebergテーブル用の設定
+      # datalake_formats: iceberg
+      iceberg: true
+      # Glueバージョン
+      glue_version: "4.0"
+      # S3データディレクトリ
+      location: "{{ env_var('DBT_S3_DATA_DIR') }}"
+      # セッション設定
+      idle_timeout: 10
+      query_timeout: 60
+      # その他のオプション
+      extra_jars: []
+      extra_py_files: []
+      delta_athena_prefix: ""
+      use_interactive_session: true

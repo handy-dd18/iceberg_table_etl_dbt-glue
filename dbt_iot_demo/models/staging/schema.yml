@@ -1,0 +1,35 @@
+version: 2
+
+models:
+  - name: stg_devices
+    description: "デバイスマスタのステージングモデル"
+    columns:
+      - name: device_id
+        description: "デバイスの一意識別子"
+        tests:
+          - unique
+          - not_null
+      - name: is_multi_sensor
+        description: "マルチセンサーかどうかのフラグ"
+
+  - name: stg_sensor_readings
+    description: "センサー読み取りデータのステージングモデル"
+    columns:
+      - name: reading_id
+        description: "読み取りの一意識別子"
+        tests:
+          - unique
+          - not_null
+      - name: quality_category
+        description: "品質カテゴリ（excellent, good, fair, poor）"
+
+  - name: stg_alerts
+    description: "アラートデータのステージングモデル"
+    columns:
+      - name: alert_id
+        description: "アラートの一意識別子"
+        tests:
+          - unique
+          - not_null
+      - name: severity_level
+        description: "重要度レベル（数値）"

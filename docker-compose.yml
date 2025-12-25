@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  dbt:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dbt-glue-iot-demo
+    volumes:
+      # dbtプロジェクトをマウント（開発時の変更を反映）
+      - ./dbt_iot_demo:/dbt
+      # AWS認証情報をマウント
+      - ~/.aws:/root/.aws:ro
+      # profiles.ymlをマウント
+      - ./profiles.yml:/root/.dbt/profiles.yml:ro
+    environment:
+      # AWS設定（環境変数で上書き可能）
+      - AWS_REGION=${AWS_REGION:-ap-northeast-1}
+      - AWS_PROFILE=${AWS_PROFILE:-default}
+      # dbt-glue用の環境変数
+      - DBT_GLUE_REGION=${AWS_REGION:-ap-northeast-1}
+      - DBT_GLUE_ROLE_ARN=${GLUE_ROLE_ARN}
+      - DBT_GLUE_DATABASE=${GLUE_DATABASE:-iot_demo}
+      - DBT_S3_DATA_DIR=${S3_DATA_DIR}
+    working_dir: /dbt
+    # インタラクティブシェル用
+    stdin_open: true
+    tty: true

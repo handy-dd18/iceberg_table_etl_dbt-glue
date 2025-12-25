@@ -1,0 +1,30 @@
+# Environment
+.env
+*.env.local
+
+# dbt
+dbt_iot_demo/target/
+dbt_iot_demo/dbt_packages/
+dbt_iot_demo/logs/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.egg-info/
+.eggs/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# AWS
+.aws/

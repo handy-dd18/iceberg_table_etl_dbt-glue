@@ -1,0 +1,6 @@
+alert_id,device_id,timestamp,alert_type,severity,message,is_resolved
+A001,DEV001,2024-12-01 08:35:00,threshold_exceeded,warning,Temperature exceeded 23°C threshold,true
+A002,DEV004,2024-12-01 08:20:00,threshold_exceeded,warning,Humidity exceeded 53% threshold,true
+A003,DEV006,2024-12-01 07:00:00,device_offline,critical,Device not responding,false
+A004,DEV007,2024-12-01 08:05:00,low_quality,info,Quality score below 0.96,true
+A005,DEV008,2024-12-01 08:10:00,threshold_exceeded,warning,Humidity exceeded 55% threshold,false

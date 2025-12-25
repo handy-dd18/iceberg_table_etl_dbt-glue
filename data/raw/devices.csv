@@ -1,0 +1,9 @@
+device_id,device_name,device_type,location,installation_date,is_active
+DEV001,Temperature Sensor A,temperature,Tokyo,2024-01-15,true
+DEV002,Temperature Sensor B,temperature,Osaka,2024-02-20,true
+DEV003,Humidity Sensor A,humidity,Tokyo,2024-01-20,true
+DEV004,Humidity Sensor B,humidity,Nagoya,2024-03-10,true
+DEV005,Pressure Sensor A,pressure,Tokyo,2024-02-01,true
+DEV006,Pressure Sensor B,pressure,Osaka,2024-03-15,false
+DEV007,Multi Sensor A,multi,Fukuoka,2024-04-01,true
+DEV008,Multi Sensor B,multi,Sapporo,2024-04-15,true
