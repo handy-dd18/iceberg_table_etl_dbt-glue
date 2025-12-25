@@ -1,3 +1,5 @@
+> **注意**: このプロジェクトは生成AI（Claude）によって作成されました。本番環境での使用前に、コードのレビューと検証を行ってください。
+
 # dbt-glue Iceberg Table ETL デモ
 
 dbtとdbt-glueアダプターを使用して、AWS S3上のIcebergテーブルを対象としたデータモデリングを行うデモプロジェクトです。
@@ -124,26 +126,43 @@ aws s3 cp data/raw/alerts.csv s3://${S3_BUCKET}/iot_demo/raw/alerts/alerts.csv
 
 ### 3. AthenaでIcebergテーブルを作成
 
-Athenaコンソールまたは AWS CLI を使用して、`athena_scripts/` 内のSQLスクリプトを順番に実行します：
+AWS CLIを使用して、`athena_scripts/` 内のSQLスクリプトを順番に実行します。
+`envsubst` コマンドで環境変数を自動的に置換します。
 
 ```bash
+# Athenaクエリ結果の出力先を設定
+ATHENA_OUTPUT_LOCATION="s3://${S3_BUCKET}/athena-results/"
+
 # 1. データベース作成
-# athena_scripts/01_create_database.sql の ${S3_BUCKET} を置換して実行
+aws athena start-query-execution \
+  --query-string "$(envsubst < athena_scripts/01_create_database.sql)" \
+  --result-configuration OutputLocation=${ATHENA_OUTPUT_LOCATION}
 
 # 2. 外部テーブル（CSV）作成
-# athena_scripts/02_create_external_tables.sql の ${S3_BUCKET} を置換して実行
+aws athena start-query-execution \
+  --query-string "$(envsubst < athena_scripts/02_create_external_tables.sql)" \
+  --result-configuration OutputLocation=${ATHENA_OUTPUT_LOCATION}
 
 # 3. Icebergテーブル作成
-# athena_scripts/03_create_iceberg_tables.sql の ${S3_BUCKET} を置換して実行
+aws athena start-query-execution \
+  --query-string "$(envsubst < athena_scripts/03_create_iceberg_tables.sql)" \
+  --result-configuration OutputLocation=${ATHENA_OUTPUT_LOCATION}
 
 # 4. データロード
-# athena_scripts/04_load_data_to_iceberg.sql を実行
+aws athena start-query-execution \
+  --query-string "$(envsubst < athena_scripts/04_load_data_to_iceberg.sql)" \
+  --result-configuration OutputLocation=${ATHENA_OUTPUT_LOCATION}
 
 # 5. データ検証
-# athena_scripts/05_verify_data.sql を実行
+aws athena start-query-execution \
+  --query-string "$(envsubst < athena_scripts/05_verify_data.sql)" \
+  --result-configuration OutputLocation=${ATHENA_OUTPUT_LOCATION}
 ```
 
-**注意**: 各SQLファイル内の `${S3_BUCKET}` を実際のバケット名に置換してから実行してください。
+**注意**:
+- `envsubst` は `gettext` パッケージに含まれています（`apt install gettext` または `brew install gettext`）
+- 各クエリの実行状況はAthenaコンソールまたは `aws athena get-query-execution` で確認できます
+- 複数のSQL文を含むファイルは、Athenaでは1文ずつ実行する必要があります
 
 ### 4. Dockerイメージのビルド
 
@@ -246,7 +265,3 @@ docker-compose run --rm dbt bash
 - [Apache Iceberg](https://iceberg.apache.org/)
 - [AWS Glue Documentation](https://docs.aws.amazon.com/glue/)
 - [Amazon Athena Documentation](https://docs.aws.amazon.com/athena/)
-
-## ライセンス
-
-MIT License
