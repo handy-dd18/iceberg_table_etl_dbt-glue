@@ -69,10 +69,19 @@ dbtとdbt-glueアダプターを使用して、AWS S3上のIcebergテーブル�
 │       └── alerts.csv
 ├── athena_scripts/                 # Athena SQLスクリプト
 │   ├── 01_create_database.sql
-│   ├── 02_create_external_tables.sql
-│   ├── 03_create_iceberg_tables.sql
-│   ├── 04_load_data_to_iceberg.sql
-│   └── 05_verify_data.sql
+│   ├── 02a_create_devices_csv_table.sql
+│   ├── 02b_create_sensor_readings_csv_table.sql
+│   ├── 02c_create_alerts_csv_table.sql
+│   ├── 03a_create_devices_iceberg_table.sql
+│   ├── 03b_create_sensor_readings_iceberg_table.sql
+│   ├── 03c_create_alerts_iceberg_table.sql
+│   ├── 04a_load_devices.sql
+│   ├── 04b_load_sensor_readings.sql
+│   ├── 04c_load_alerts.sql
+│   ├── 05a_verify_devices.sql
+│   ├── 05b_verify_sensor_readings.sql
+│   ├── 05c_verify_alerts.sql
+│   └── 05d_verify_record_counts.sql
 └── dbt_iot_demo/                   # dbtプロジェクト
     ├── dbt_project.yml
     └── models/
@@ -133,36 +142,44 @@ AWS CLIを使用して、`athena_scripts/` 内のSQLスクリプトを順番に�
 # Athenaクエリ結果の出力先を設定
 ATHENA_OUTPUT_LOCATION="s3://${S3_BUCKET}/athena-results/"
 
+# 実行用の関数を定義
+run_athena_query() {
+  aws athena start-query-execution \
+    --query-string "$(envsubst < $1)" \
+    --result-configuration OutputLocation=${ATHENA_OUTPUT_LOCATION}
+  echo "Executed: $1"
+  sleep 2  # クエリ間隔を空ける
+}
+
 # 1. データベース作成
-aws athena start-query-execution \
-  --query-string "$(envsubst < athena_scripts/01_create_database.sql)" \
-  --result-configuration OutputLocation=${ATHENA_OUTPUT_LOCATION}
+run_athena_query athena_scripts/01_create_database.sql
 
 # 2. 外部テーブル（CSV）作成
-aws athena start-query-execution \
-  --query-string "$(envsubst < athena_scripts/02_create_external_tables.sql)" \
-  --result-configuration OutputLocation=${ATHENA_OUTPUT_LOCATION}
+run_athena_query athena_scripts/02a_create_devices_csv_table.sql
+run_athena_query athena_scripts/02b_create_sensor_readings_csv_table.sql
+run_athena_query athena_scripts/02c_create_alerts_csv_table.sql
 
 # 3. Icebergテーブル作成
-aws athena start-query-execution \
-  --query-string "$(envsubst < athena_scripts/03_create_iceberg_tables.sql)" \
-  --result-configuration OutputLocation=${ATHENA_OUTPUT_LOCATION}
+run_athena_query athena_scripts/03a_create_devices_iceberg_table.sql
+run_athena_query athena_scripts/03b_create_sensor_readings_iceberg_table.sql
+run_athena_query athena_scripts/03c_create_alerts_iceberg_table.sql
 
-# 4. データロード
-aws athena start-query-execution \
-  --query-string "$(envsubst < athena_scripts/04_load_data_to_iceberg.sql)" \
-  --result-configuration OutputLocation=${ATHENA_OUTPUT_LOCATION}
+# 4. データロード（前のステップ完了後に実行）
+run_athena_query athena_scripts/04a_load_devices.sql
+run_athena_query athena_scripts/04b_load_sensor_readings.sql
+run_athena_query athena_scripts/04c_load_alerts.sql
 
 # 5. データ検証
-aws athena start-query-execution \
-  --query-string "$(envsubst < athena_scripts/05_verify_data.sql)" \
-  --result-configuration OutputLocation=${ATHENA_OUTPUT_LOCATION}
+run_athena_query athena_scripts/05a_verify_devices.sql
+run_athena_query athena_scripts/05b_verify_sensor_readings.sql
+run_athena_query athena_scripts/05c_verify_alerts.sql
+run_athena_query athena_scripts/05d_verify_record_counts.sql
 ```
 
 **注意**:
 - `envsubst` は `gettext` パッケージに含まれています（`apt install gettext` または `brew install gettext`）
 - 各クエリの実行状況はAthenaコンソールまたは `aws athena get-query-execution` で確認できます
-- 複数のSQL文を含むファイルは、Athenaでは1文ずつ実行する必要があります
+- データロード（ステップ4）は、テーブル作成（ステップ3）が完了してから実行してください
 
 ### 4. Dockerイメージのビルド
 
